@@ -1,4 +1,9 @@
 <?php
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
 Route::get('/sitemap.xml', 'SiteController@sitemap')->name('sitemap');
 // Auth routes
 Auth::routes();
@@ -32,8 +37,8 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
                 Route::post('/applications', 'API_DatatableController@applications');
                 Route::post('/animal', 'API_DatatableController@Animal');
                 Route::post('/restaurant', 'API_DatatableController@Restaurant');
-                Route::post('/living_company','API_DatatableController@LivingCompanies');
-                Route::post('/livingRequest','API_DatatableController@livingRequest');
+                Route::post('/living_company', 'API_DatatableController@LivingCompanies');
+                Route::post('/livingRequest', 'API_DatatableController@livingRequest');
             });
 
             Route::post('/custom_offers', 'API_DatatableController@CustomOffers');
@@ -66,8 +71,6 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
 
             // parking for operators
             Route::post('/hotel-parking', 'Parking\\API_ParkingHotelApplicationsController@index');
-
-
         });
 
         /* INVOICE ROUTES */
@@ -104,7 +107,7 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
         });
 
         // wedding api calls
-        Route::group(['prefix' => 'wedding'], function (){
+        Route::group(['prefix' => 'wedding'], function () {
             Route::post('/ads-settings', 'API_WeddingItemsController@settings')->name('admin.ads.api.settings');
             Route::post('/save-ad', 'API_WeddingItemsController@store')->name('admin.ads.api.add-ad');
             Route::post('/save-buy-ad', 'API_WeddingItemsController@storeBuy')->name('admin.ads.api.add-buy-ad');
@@ -145,7 +148,7 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
                 Route::get('/show-offer/{offer_id}', 'API_FoodsCompanyController@getShowOffer');
                 Route::post('/save-offer', 'API_FoodsCompanyController@saveOffer');
                 Route::post('/offer-activation/{offer_id}', 'API_FoodsCompanyController@offerActivation');
-            //Route::delete('/delete-offer/{offer_id}', 'API_FoodController@deleteoffer');
+                //Route::delete('/delete-offer/{offer_id}', 'API_FoodController@deleteoffer');
             });
 
             Route::get('/foods-list', 'API_FoodsCompanyController@getFoodsList');
@@ -206,12 +209,12 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
             });
         });
 
-         //==========================Start of Application  Routing ==========================
-         Route::group(['prefix' => 'application'], function () {
+        //==========================Start of Application  Routing ==========================
+        Route::group(['prefix' => 'application'], function () {
             Route::get('/show/{id}', 'API_ApplicationController@getShow');
             Route::post('/save', 'API_ApplicationController@setApplicationOffer');
             Route::delete('/delete/{id}', 'API_ApplicationController@Delete');
-            Route::post('/cancel/{id}', 'API_ApplicationController@Cancel');            
+            Route::post('/cancel/{id}', 'API_ApplicationController@Cancel');
         });
 
         //==========================Start of Agent  Routing ==========================
@@ -314,31 +317,30 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
             Route::post('/updateValue/{custom_offer_id}/{hotel_id}', 'API_CustomOfferController@updateValue');
             Route::post('/delete/{custom_offer_id}', 'API_CustomOfferController@Delete');
         });
-         // Living
+        // Living
         Route::group(['prefix' => 'living'], function () {
-            Route::group(['middleware' => 'can:manage-living'], function(){
-            Route::group(['prefix' => 'livingoffer'], function(){
-                // Living Offer
-                Route::get('/show/{id}', 'API_LivingOfferController@Show');
-                Route::post('/save', 'API_LivingOfferController@Save');
-                Route::post('/send/{type}/{id}', 'API_LivingOfferController@Send');
-                Route::post('/delete/{id}', 'API_LivingOfferController@Delete');
-                Route::get('/gallery/{gallery_name}/{living_offer_id}', 'API_LivingOfferController@getGallery');
-            });
-            Route::group(['prefix' => 'livingCompany'], function(){
-                Route::get('/show/{id}', 'API_LivingCompanyController@Show');
-                Route::post('/save', 'API_LivingCompanyController@Save');
-                Route::post('/delete/{id}', 'API_LivingCompanyController@Delete');
-                Route::get('/list', 'API_LivingCompanyController@getList');
-                Route::get('/gallery/{living_company_id}', 'API_LivingCompanyController@getGallery');
-            });
-            Route::group(['prefix' => 'livingRequest'], function(){
-                Route::get('/show/{livinge_request_company_id}', 'API_LivingRequestController@Show');
-                Route::get('/livingRequest-lists', 'API_LivingRequestController@getLists');
-                Route::post('/cancel/{livingRequest_id}', 'API_LivingRequestController@cancel');
-                Route::post('/updateOffer/{livingRequest_id}', 'API_LivingRequestController@updateOffer');
-            });
-
+            Route::group(['middleware' => 'can:manage-living'], function () {
+                Route::group(['prefix' => 'livingoffer'], function () {
+                    // Living Offer
+                    Route::get('/show/{id}', 'API_LivingOfferController@Show');
+                    Route::post('/save', 'API_LivingOfferController@Save');
+                    Route::post('/send/{type}/{id}', 'API_LivingOfferController@Send');
+                    Route::post('/delete/{id}', 'API_LivingOfferController@Delete');
+                    Route::get('/gallery/{gallery_name}/{living_offer_id}', 'API_LivingOfferController@getGallery');
+                });
+                Route::group(['prefix' => 'livingCompany'], function () {
+                    Route::get('/show/{id}', 'API_LivingCompanyController@Show');
+                    Route::post('/save', 'API_LivingCompanyController@Save');
+                    Route::post('/delete/{id}', 'API_LivingCompanyController@Delete');
+                    Route::get('/list', 'API_LivingCompanyController@getList');
+                    Route::get('/gallery/{living_company_id}', 'API_LivingCompanyController@getGallery');
+                });
+                Route::group(['prefix' => 'livingRequest'], function () {
+                    Route::get('/show/{livinge_request_company_id}', 'API_LivingRequestController@Show');
+                    Route::get('/livingRequest-lists', 'API_LivingRequestController@getLists');
+                    Route::post('/cancel/{livingRequest_id}', 'API_LivingRequestController@cancel');
+                    Route::post('/updateOffer/{livingRequest_id}', 'API_LivingRequestController@updateOffer');
+                });
             });
         });
         Route::group(['middleware' => 'supervisor'], function () {
@@ -434,16 +436,18 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin'], function 
             Route::post('/restaurant-gallery', 'API_UploaderController@RestaurantGallery');
             Route::post('/restaurant-logo', 'API_UploaderController@RestaurantLogo');
 
-            Route::post('/gallery/{folderName}','API_UploaderController@Gallery');
-            Route::post('/logo/{folderName}','API_UploaderController@Logo');
+            Route::post('/gallery/{folderName}', 'API_UploaderController@Gallery');
+            Route::post('/logo/{folderName}', 'API_UploaderController@Logo');
         });
     });
 });
 
 Route::group(['middleware' => 'is-blocked'], function () {
 
-    Route::post('/pay-return', 'BookingController@postPayReturn')->name("pay-return");
-    Route::get('/pay-return', 'BookingController@postPayTapReturn')->name("pay-return");
+    Route::post('/pay-return', 'BookingController@paytabsReturn')->name("pay-return");
+    Route::get('/pay-return', 'BookingController@tapReturn')->name("pay-return");
+    Route::get('tabby-return', 'BookingController@tabbyReturn')->name("tabby-return");
+
     Route::post('/parking/pay-return', 'Parking\\ParkingInvoiceController@returnedResponseFromTap')->name("parking.pay-return");
     Route::get('/parking/pay-return', 'Parking\\ParkingInvoiceController@returnedResponseFromTap')->name("parking.pay-return");
 
@@ -453,7 +457,7 @@ Route::group(['middleware' => 'is-blocked'], function () {
             'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
         ],
         function () {
-            $lang = \LaravelLocalization::getCurrentLocale();
+            $lang = LaravelLocalization::getCurrentLocale();
             view()->share(['lang_align' => (($lang == 'ar') ? 'right' : 'left'), 'lang_align_ops' => (($lang == 'ar') ? 'left' : 'right'), 'lang_align_fl' => (($lang == 'ar') ? 'r' : 'l'), 'lang_align_fl_ops' => (($lang == 'ar') ? 'l' : 'r')]);
 
             // Website API for javascript or angularjs requests
@@ -477,53 +481,52 @@ Route::group(['middleware' => 'is-blocked'], function () {
                     });
 
 
-                    Route::group(['prefix' => 'living-request'], function(){
-                        Route::get('/living-request-lists','LivingRequestController@Lists');
+                    Route::group(['prefix' => 'living-request'], function () {
+                        Route::get('/living-request-lists', 'LivingRequestController@Lists');
                         Route::get("/show/{livingRequest}", "LivingRequestController@show");
-                        Route::post('/UpdateDate/{id}','LivingRequestController@UpdateDate');
-                        Route::delete('/delete/{id}','LivingRequestController@Delete');
-                        Route::post('/save','LivingRequestController@Save');
-                        Route::post('/store','LivingRequestController@store');
-                        Route::post('/accept_offer','LivingRequestController@AcceptOffer');
+                        Route::post('/UpdateDate/{id}', 'LivingRequestController@UpdateDate');
+                        Route::delete('/delete/{id}', 'LivingRequestController@Delete');
+                        Route::post('/save', 'LivingRequestController@Save');
+                        Route::post('/store', 'LivingRequestController@store');
+                        Route::post('/accept_offer', 'LivingRequestController@AcceptOffer');
                     });
 
                     Route::group(['prefix' => 'application'], function () {
                         Route::get('/get-companies/{company_type}', 'ApplicationController@getCompanies');
-                        Route::post('/save-bus-request', 'ApplicationController@saveBusRequest');                      
-                        Route::post('/save-embassy-request', 'ApplicationController@saveEmbassyRequest');    
+                        Route::post('/save-bus-request', 'ApplicationController@saveBusRequest');
+                        Route::post('/save-embassy-request', 'ApplicationController@saveEmbassyRequest');
                         Route::post('/save-message-request', 'ApplicationController@saveMessageRequest');
                         Route::get('/showOffers/{token}/', 'ApplicationController@getShow');
                         Route::get('/showOffers/{token}/{id}', 'ApplicationController@AcceptOffer')->name("application-accept-offer");
-  
                     });
 
                     Route::post('/register', 'AccountController@postRegister');
                     Route::post('/reset', 'AccountController@postResetPassword');
                     Route::post('/send-phone-verification-code', 'AccountController@postSendPhoneVerificationCode');
                     Route::post('/check-phone-verification-code', 'AccountController@postCheckPhoneVerificationCode');
-                    Route::post('/send-phone-verification-code-search','AccountController@postSendPhoneVerificationCodeSearch');
-                    Route::post('/show-request-search','AccountController@show');
+                    Route::post('/send-phone-verification-code-search', 'AccountController@postSendPhoneVerificationCodeSearch');
+                    Route::post('/show-request-search', 'AccountController@show');
                     Route::post('/login', 'AccountController@postLogin');
                 });
 
-               
+
                 // Hotel
                 Route::group(['prefix' => 'hotel'], function () {
                     Route::get('/packages/{hotel_id}', 'HotelController@apiHotelPackages');
                     Route::get('/package/{id}', 'HotelController@apiPackage');
                 });
 
-                Route::group(['prefix' => 'livingCompany'],function(){
-                    Route::get('/livingOffers/{living_company_id}','LivingCompaniesController@apiLivingOffers');
-                    Route::get('/package/{id}','LivingCompaniesController@apiPackage');
+                Route::group(['prefix' => 'livingCompany'], function () {
+                    Route::get('/livingOffers/{living_company_id}', 'LivingCompaniesController@apiLivingOffers');
+                    Route::get('/package/{id}', 'LivingCompaniesController@apiPackage');
                     Route::post('/set-pay-info', 'LivingCompaniesController@apiPostSetPayInfo');
-
                 });
 
                 // Booking
                 Route::group(['prefix' => 'booking'], function () {
                     Route::post('/start', 'BookingController@apiPostStart');
                     Route::post('/set-pay-info', 'BookingController@apiPostSetPayInfo');
+                    Route::post('/store/{package_id}', 'BookingController@store')->name('store-booking');
                 });
 
 
@@ -537,20 +540,18 @@ Route::group(['middleware' => 'is-blocked'], function () {
                 Route::post('/living-request-guest', 'SiteController@storeLivingRequest');
 
                 // parking api calls
-                Route::group(['prefix' => 'parking'], function (){
+                Route::group(['prefix' => 'parking'], function () {
                     Route::post('/application', 'Parking\\ParkingApplicationController@store');
                     Route::post('/parking-items', 'Parking\\ParkingApplicationController@parkingItems');
                     Route::post('/parking-packages', 'Parking\\ParkingApplicationController@parkingPackages');
                     Route::post('/applications-search', 'Parking\\ParkingApplicationController@search');
                 });
-                
-                //Uloader Files
-                Route::group(['prefix' => 'uploader'], function(){
-                    Route::post('/gallery/{folderName}','APIv1\UploaderController@Gallery');
-                    Route::post('/logo/{folderName}','APIv1\UploaderController@Logo');
-                });
-                
 
+                //Uloader Files
+                Route::group(['prefix' => 'uploader'], function () {
+                    Route::post('/gallery/{folderName}', 'APIv1\UploaderController@Gallery');
+                    Route::post('/logo/{folderName}', 'APIv1\UploaderController@Logo');
+                });
             });
 
             // Site routes
@@ -565,6 +566,7 @@ Route::group(['middleware' => 'is-blocked'], function () {
             Route::get('/i/{hash}', 'InvoiceController@getInvoice')->name('invoice-details');
             // Route::post('/i/{hash}/pay-return', 'InvoiceController@postPayReturn');
             Route::get('/i/{hash}/pay-return', 'InvoiceController@postPayTapReturn')->name("invoice-pay-return");
+            Route::get('/i/{hash}/tabby-return', 'InvoiceController@tabbyReturn')->name("invoice-tabby-return");
 
             // account routes
             Route::group(['prefix' => 'account', 'middleware' => 'auth'], function () {
@@ -575,10 +577,9 @@ Route::group(['middleware' => 'is-blocked'], function () {
                 Route::post('/living-requests', 'LivingRequestController@LivingRequests');
                 Route::get('/bookings/{id}', 'AccountController@showBooking')->name('account-booking');
                 Route::get('/settings', 'AccountController@settings')->name('account-settings');
-
             });
 
-            Route::get('/booking/{package_id}', 'BookingController@index')->name('booking');
+            Route::get('/booking/{package}', 'BookingController@index')->name('booking');
             Route::get('parking/invoice/{application}/{parking}/pay', 'Parking\\ParkingInvoiceController@update')->name('parking.invoice.update');
             Route::get('parking/invoice/{application}', 'Parking\\ParkingInvoiceController@show')->name('parking.invoice.show');
             Route::get('parking/application/{application}', 'Parking\\ParkingApplicationController@show')->name('parking.application.show');
@@ -594,15 +595,9 @@ Route::group(['middleware' => 'is-blocked'], function () {
 
 
             Route::get('/{slug}', 'SiteController@page')->name('page');
-
-        });
-
-
+        }
+    );
 });
 
-
-
-
-
-
-
+// Tabby webhook hundler
+// Route::post('/tabby', 'TabbyController@webhook');

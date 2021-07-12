@@ -17,8 +17,6 @@
   <link href="{{ asset('assets/css/booked_ltr.css?v=9') }}" rel="stylesheet">
   @endif
   <link rel="icon" href="{{ asset('assets/images/favicon.ico?v=1') }}" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon" />
-
-<!--<script src="https://checkout.tabby.ai/tabby-promo.js"></script>-->
 </head>
 <body>
   <div @if($Invoice->level == 0) class="invoice-padding" @endif>
@@ -35,15 +33,15 @@
                 <b class="text-muted">{{ __('master.invoice.date_of_create') }}</b>
               </div>
               <div class="col-sm-6">
-                <h5 class="mt-1 mt-sm-0">{{ $Invoice->created_at->format('d/m/Y') }}</h5>
+                <h5 class="mt-sm-0 mt-1">{{ $Invoice->created_at->format('d/m/Y') }}</h5>
               </div>
             </div>
-            <div class="row mt-2 mt-sm-0">
+            <div class="row mt-sm-0 mt-2">
               <div class="col-sm-6">
                 <b class="text-muted">{{ __('master.invoice.invoice_no') }}</b>
               </div>
               <div class="col-sm-6">
-                <h5 class="mt-1 mt-sm-0">{{ $Invoice->id }}</h5>
+                <h5 class="mt-sm-0 mt-1">{{ $Invoice->id }}</h5>
               </div>
             </div>
 
@@ -61,7 +59,7 @@
       <div class="book-check-wrapper mb-5">
         <div class="row align-items-center">
           @if($Invoice->Hotel)
-          <div class="col-sm-3 text-center text-primary">
+          <div class="col-sm-3 text-primary text-center">
             <i class="ic-calendar"></i>
             <h3>
               @if(!empty($Invoice->package->unit_count) && $Invoice->package->unit_count > 0)
@@ -74,7 +72,7 @@
           </div>
           @endif
           <div class="col-sm-9">
-            <div class="row mt-4 mt-md-0 text-center text-md-auto">
+            <div class="row mt-md-0 text-md-auto mt-4 text-center">
               <div class="col-6">
                 <h5>{{ __('master.form.checkin_date') }}</h5>
                 <h2 class="text-primary">{{ date('d/m/Y',strtotime($Invoice->check_in_date)) }}</h2>
@@ -93,7 +91,7 @@
       </div>
       <div class="alert alert-light p-4">
         <div class="row">
-          <div class="col-12 col-sm-4 pb-3 pb-md-0">
+          <div class="col-12 col-sm-4 pb-md-0 pb-3">
             <div class="mb-1">
               <b class="text-muted">{{ __('master.invoice.customer_name') }}</b>
             </div>
@@ -145,7 +143,7 @@
                 @endfor
               </div>
             </div>
-            <div class="d-flex justify-content-center justify-content-md-start font-weight-bold"><div class="mb-1 h4">{{ $Item->RoomType->name }}</div><span class="mx-2 h4">x</span><span class="h4">{{ $Item->quantity }} {{ __('master.rooms') }}</span></div>
+            <div class="d-flex justify-content-center justify-content-md-start font-weight-bold"><div class="h4 mb-1">{{ $Item->RoomType->name }}</div><span class="h4 mx-2">x</span><span class="h4">{{ $Item->quantity }} {{ __('master.rooms') }}</span></div>
             <div class="description mb-sm-4">
               {{ $Item->notes }}
             </div>
@@ -159,7 +157,7 @@
       @endif
       @if($Invoice->LivingCompany && $Invoice->LivingCompany->meal_type)
         <div class="invoice-items">
-          <div class="row book-package text-center text-md-auto bt-0">
+          <div class="row book-package text-md-auto bt-0 text-center">
             <div class="col-sm-3">
               <div class="image">
                 @if($Invoice->LivingCompany->logo)
@@ -247,22 +245,43 @@
           </div>
         </div>
       </div>
+
       
-      <!--<div>-->
-        
-      <!--   اختيار طريقة الدفع-->
-      <!--  <br />-->
-        
-      <!--  <input type="radio" id="installments" name="payment_method" value="installments">-->
-      <!--  <label for="installments">تقسيط على 4 دفعات بلا فائدة</label><br>-->
-      <!--  <input type="radio" id="pay_later" name="payment_method" value="pay_later">-->
-      <!--  <label for="pay_later">الدفع بعد 14 يوما</label><br>-->
-        
-      <!--</div>-->
+      @if ( is_null($tabby) )
+        <div class="alert alert-danger text-center">{{ __('master.invoice.tabby.load_faild') }}</div>
+      @else
+        @if ($tabby && in_array($tabby['status'], ['created', 'approved']) )
+          <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
+          <div id="tabbyPromo" style="display: flex;justify-content: center;"></div>
+          
+          <script>
+            new TabbyPromo({
+              selector: '#tabbyPromo',
+              currency: 'SAR',
+              price: {{ $Invoice->total }}
+            });
+          </script>
+
+          <div class="mt-2 text-center">
+            @if ( array_key_exists('installments', $tabby['configuration']['available_products']) )
+              <a target="_blank" class="btn btn-primary btn-lg mb-1" href="{{ $tabby['configuration']['available_products']['installments'][0]['web_url'] }}">
+                {{ __('master.invoice.tabby.installments') }}
+              </a>
+            @endif
+            <br>
+            @if ( array_key_exists('pay_later', $tabby['configuration']['available_products']) )
+              <a target="_blank" class="btn btn-success btn-lg" href="{{ $tabby['configuration']['available_products']['pay_later'][0]['web_url'] }}">
+                {{ __('master.invoice.tabby.pay_later') }}
+              </a>
+            @endif
+          </div>
+        @endif
+      @endif
+      
       
       @if($Invoice->notes)
       <div class="mb-3">
-        <div class="mb-2 text-muted">
+        <div class="text-muted mb-2">
           <b>{{ __('master.invoice.notes') }}</b>
         </div>
         {!! nl2br($Invoice->notes) !!}
@@ -270,10 +289,10 @@
       @endif
       @if($Invoice->payment_method && $Invoice->payment_method == 'bank_transfer')
       <!-- Bank transfer information -->
-      <div class="alert alert-light p-4 mb-0 mt-5">
-        <h4 class="mb-3 font-weight-bold">{{ __('master.invoice.payment_bank_transfer.title') }}</h4>
+      <div class="alert alert-light p-4 mt-5 mb-0">
+        <h4 class="font-weight-bold mb-3">{{ __('master.invoice.payment_bank_transfer.title') }}</h4>
         <div class="row">
-          <div class="col-12 col-sm-6 pb-3 pb-md-0">
+          <div class="col-12 col-sm-6 pb-md-0 pb-3">
             <div class="mb-1">
               <b class="text-muted">{{ __('master.invoice.payment_bank_transfer.bank_name') }}</b>
             </div>
@@ -365,21 +384,5 @@
 
   </script>
   @endif
-  
-  
-        <!--<script>-->
-        <!--new tabbyPromo({-->
-        <!--  selector: '#tabbyPromo',-->
-        <!--  currency: 'SAR',-->
-        <!--  price: '500.00', -->
-        <!--  lang: 'en', -->
-        <!--  source: 'product',-->
-        <!--  api_key: 'pk_test_d3111348-1a81-4e29-9607-d7f8af79a3fb'-->
-        <!--});-->
-        <!--</script>-->
-
-
-
-
 </body>
 </html>

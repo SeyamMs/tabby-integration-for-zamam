@@ -128,6 +128,7 @@ return [
         'send' => 'Send',
         'send_again' => 'Send it again',
         'did_not_recieve_it_yet' => 'Did not receive the code yet?',
+        'confirm_booking' => 'Confirm Booking',
     ],
     'msg' => [
         'no_bookings' => 'You have not made any booking yet',
@@ -198,7 +199,12 @@ return [
         'pay_success_msg' => 'Thank you, your payment was successful',
         'pay_failed_msg' => 'Sorry, your payment has failed Please try again',
         'waitting_payment_slug' => 'This invoice awaiting payment, the amount is <b>:amount</b>',
-        'pay_now' => 'Pay Now'
+        'pay_now' => 'Pay Now',
+        'tabby' => [
+            'load_faild' => 'Tabby loading failed please refresh the page.',
+			'installments' => 'Tabby - 4 installments without interest',
+			'pay_later' => 'Tabby - Pay after 14 days',
+		]
     ],
 
     // 404

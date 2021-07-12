@@ -1,4 +1,4 @@
-"# tabby-integration-for-zamam" 
+# tabby-integration-for-zamam
 
 To integrate Tabby just replace these files in the project files and then add the following lines to .env file
 

@@ -503,13 +503,13 @@ class BookingController extends Controller
                     $message = 'تفاصيل الحجز في حجوزات زمزم \n' . $line1 . '\n' . $line2 . '\n' . $line3;
                     break;
             }
-            // (new SMSFactory())->send($booking->phone, $message);
-            Log::debug('sms was sent');
+            (new SMSFactory())->send($booking->phone, $message);
+            // Log::debug('sms was sent');
             
             // Email
             if ($booking->email) {
-                // Mail::to($booking->email)->send(new BookingMail($booking));
-                Log::debug('email was sent');
+                Mail::to($booking->email)->send(new BookingMail($booking));
+                // Log::debug('email was sent');
             }
         }
             
